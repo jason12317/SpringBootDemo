@@ -11,7 +11,6 @@ import com.code.demo.application.model.UserInfoPersistence;
 @Repository
 public interface  UserInfoRepository extends JpaRepository<UserInfoPersistence , Long>{
 //	List<UserInfoPersistence> findAll();
-//	List<UserInfoPersistence> findByEmail(String email);
 	
 	@Query(value="select * from spring.userinfo u where EMAIL = ?1 and PASSWORD = ?2 ", nativeQuery = true)
 	List<UserInfoPersistence> findCheckMemberAccount(String email,String password);

@@ -23,21 +23,21 @@ public class UserInfoController {
 
     @GetMapping("/login")
     public String login(Model model) {
-    	UserInfoPersistence userInfoPersistence = new UserInfoPersistence(); // 將Person 實體化
+    	UserInfoPersistence userInfoPersistence = new UserInfoPersistence(); // 將User 實體化
         model.addAttribute("userInfoPersistence", userInfoPersistence);
         return "login";
     }
     
     @GetMapping("/signup")
     public String signup(Model model) {
-    	UserInfoPersistence userInfoPersistence = new UserInfoPersistence(); // 將Person 實體化
+    	UserInfoPersistence userInfoPersistence = new UserInfoPersistence(); // 將User 實體化
         model.addAttribute("userInfoPersistence", userInfoPersistence);
         return "signup";
     }
     
     @PostMapping("/doLogin")
     public String doLogin(@ModelAttribute UserInfoPersistence userInfoPersistence,HttpSession session, Model model) {
-        System.out.println("ininder");
+        System.out.println("DoLogin!");
 
 		String email = userInfoPersistence.getEmail();
 		String password = userInfoPersistence.getPassword();
@@ -52,8 +52,17 @@ public class UserInfoController {
 			return "login";
 		} else {
 			session.setAttribute("uid", userAccount);
-			return "welcome";
+			return "/admin";
 		}
+    }
+    
+    @PostMapping("/doSignup")
+    public String doSignup(@ModelAttribute UserInfoPersistence userInfoPersistence,HttpSession session, Model model) {
+        System.out.println("DoSignup!");
+		userInfoRepository.save(userInfoPersistence);
+		
+        return "login";
+
     }
     
     @GetMapping("/admin")

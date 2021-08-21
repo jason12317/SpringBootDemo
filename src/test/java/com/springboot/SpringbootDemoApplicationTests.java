@@ -4,8 +4,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -17,31 +20,31 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.code.demo.application.SpringbootDemoApplication;
 import com.code.demo.application.model.UserInfoPersistence;
-import com.code.demo.application.repository.UserInfoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = SpringbootDemoApplication.class)
-@WebAppConfiguration
+@SpringBootTest
+@AutoConfigureMockMvc
 class SpringbootDemoApplicationTests {
 
-	@Autowired
-	private UserInfoRepository userApiRepository; //加入MemberRepository
-	@Autowired
-    private WebApplicationContext webApplicationContext;
-	MockMvc mvc; //創建MockMvc類的物件
-	
-	@Before
-	public void setup(){
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    ObjectMapper objectMapper;
+    @MockBean
+    UserInfoPersistence userInfo;
+
+//	@Before
+//	public void setup(){
 //		UserInfoPersistence userInfo = new UserInfoPersistence();
 //		userInfo.setId(1);
-		mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	}
+//		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+//	}
 	
 	@Test
 	void contextLoads() throws Exception {
 		String uri = "/userApi/1";
-		MvcResult result = mvc.perform(MockMvcRequestBuilders.get(uri).accept(MediaType.APPLICATION_JSON)).andReturn();
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(uri).accept(MediaType.APPLICATION_JSON)).andReturn();
 		int status = result.getResponse().getStatus();
 		System.out.println(status);
 		Assert.assertEquals("錯誤",200,status);

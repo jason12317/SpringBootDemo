@@ -20,7 +20,7 @@ import com.code.demo.application.repository.UserInfoRepository;
 
 @RestController
 @RequestMapping("/userApi")
-public class RestUserApiController {
+public class UserInfoApiController {
 
 	@Autowired
 	UserInfoModel userModel;

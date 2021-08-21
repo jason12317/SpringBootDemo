@@ -9,16 +9,16 @@
 
     <!-- Font Icon -->
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
-
     <!-- Main css -->
     <link rel="stylesheet" th:href="@{/css/signup.css}">
 </head>
+
 <body>
 
     <div class="main">
-
         <section class="signup">
-
+		<form class="login100-form validate-form flex-sb flex-w" role="form" id="signupForm" 
+			method="POST" enctype="multipart/form-data" th:action="@{/doSignup}" th:object="${userInfoPersistence}"> 
             <div class="container">
                 <div class="signup-content">
                     <form method="POST" id="signup-form" class="signup-form">
@@ -27,21 +27,17 @@
                             <input type="text" class="form-input" name="name" id="name" placeholder="Your Name"/>
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-input" name="email" id="email" placeholder="Your Email"/>
+                            <input type="email" class="form-input" name="email" id="email" th:field="*{email}" placeholder="Your Email"/>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-input" name="password" id="password" placeholder="Password"/>
+                            <input type="text" class="form-input" name="password" th:field="*{password}" id="password" placeholder="Password"/>
                             <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
                         </div>
                         <div class="form-group">
                             <input type="password" class="form-input" name="re_password" id="re_password" placeholder="Repeat your password"/>
                         </div>
                         <div class="form-group">
-                            <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
-                            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up"/>
+                            <input type="button" name="submit" id="submit" class="form-submit" value="Sign up" onclick="CheckSignup()"/>
                         </div>
                     </form>
                     <p class="loginhere">
@@ -49,12 +45,25 @@
                     </p>
                 </div>
             </div>
+		</form>
         </section>
-
     </div>
 
     <!-- JS -->
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="js/main.js"></script>
+    <script> 
+    	function CheckSignup() {
+			if (form.re_password.value != form.password.value) {
+				alert("重複密碼輸入有誤!");
+				return;
+			}else {
+				this.form.submit();
+			}
+	
+		}
+    </script>
+    
+    
 </body>
 </html>

@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 public class UploadFileController {
 	
-	 private static String UPLOADED_FOLDER = "C://Users//User//Documents//workspace-spring-tool-suite-4-4.10.0.RELEASE//upload//";
+	 private static String UPLOADED_FOLDER = "C://workspace//workspace-spring-tool-suite-4-4.10.0.RELEASE//upload//";
 	// 多個檔案上傳的接口
     @SuppressWarnings("deprecation")
 	@PostMapping("/api/upload/multi")

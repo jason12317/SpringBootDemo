@@ -5,6 +5,8 @@ import java.sql.Date;
 
 import org.springframework.stereotype.Component;
 
+import lombok.Getter;
+
 @Component
 public class UserInfoModel  implements Serializable {
 
