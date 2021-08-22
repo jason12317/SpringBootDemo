@@ -9,27 +9,23 @@
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
 <body>
-
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
 <div id="main-content" class="container">
     <div class="row">
         <div class="col-md-6">
             <form class="form-inline">
                 <div class="form-group">
-                    <label for="connect">WebSocket 連接:</label>
-                    <button id="connect" class="btn btn-default" type="submit">連接</button>
-                    <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">關閉連接
-                    </button>
+                	<label for="name">What is your name?</label>
+                    <input type="text" id="name" class="form-control mb-2" placeholder="Your name here...">
                 </div>
             </form>
-        </div>
+        </div>  
         <div class="col-md-6">
-            <form class="form-inline">
-                <div class="form-group">
-                    <label for="name">發送訊息</label>
-                    <input type="text" id="name" class="form-control" placeholder="請輸入訊息">
-                </div>
-                <button id="send" class="btn btn-default" type="submit">發送</button>
-            </form>
+            <label for="connect">連接聊天室:</label>
+            <button id="connect" class="btn btn-default" type="submit">加入</button>
+            <button id="disconnect" class="btn btn-default" type="submit" disabled="disabled">離開</button>
         </div>
     </div>
     <div class="row">
@@ -37,7 +33,7 @@
             <table id="conversation" class="table table-striped">
                 <thead>
                 <tr>
-                    <th>JASON的聊天室</th>
+                    <th>JasonTsou聊天室Demo</th>
                 </tr>
                 </thead>
                 <tbody id="chatRoom">
@@ -45,38 +41,48 @@
             </table>
         </div>
     </div>
+    <div class="row">
+    	<div class="col-md-12">    
+        	<form class="form-inline">
+                <div class="form-group">
+		            <input type="text" style="width:700px" class="form-control" id="content" placeholder="請輸入訊息...">
+		            <button id="send" class="btn btn-outline-secondary" type="submit">傳送</button>
+	    		</div>
+        	</form>
+    	</div>
+    </div>
 </div>
 </body>
 
 <script>
 
 	var stompClient = null;
+	
 	function setConnected(connected) {
-	    $("#connect").prop("disabled", connected); //將id = connect 按鈕屬性改為disabled
-	    $("#disconnect").prop("disabled", !connected);  //將id = disconnect 按鈕屬性改為disabled
+	    $("#connect").prop("disabled", connected);
+	    $("#name").prop("disabled", connected);
+	    $("#disconnect").prop("disabled", !connected);
 	    if (connected) {
-	        $("#conversation").show();  //當連接上Websocket id = conversation 顯示
+	        $("#conversation").show();
 	    }
 	    else {
-	        $("#conversation").hide(); // 將 conversation隱藏
+	        $("#conversation").hide();
 	    }
-	    $("#chatRoom").html(""); //將chatRoom內容清空
+	    $("#chatRoom").html("");
 	}
-	//連結WebSocket方法
+	
 	function connect() {
-	    var socket = new SockJS('/endpointChatRoom'); //建立一個socket物件 名稱為:/endpointChatRoom
+	    var socket = new SockJS('/endpoint-websocket');
 	    stompClient = Stomp.over(socket);
 	    stompClient.connect({}, function (frame) {
 	        setConnected(true);
 	        console.log('Connected: ' + frame);
-	        stompClient.subscribe('/topic/getResponse', function (response) {
-	        	console.log(response)
-	            showConversation(JSON.parse(response.body).responseMessage); //
+	        stompClient.subscribe('/topic/chatRoom', function (chatRoom) {
+	            showMessage(JSON.parse(chatRoom.body).content);
 	        });
 	    });
 	}
 	
-	//關閉WebSocket方法
 	function disconnect() {
 	    if (stompClient !== null) {
 	        stompClient.disconnect();
@@ -85,17 +91,14 @@
 	    console.log("Disconnected");
 	}
 	
-	//傳送訊息方法
 	function sendName() {
-	   	var name = $("#name").val()
-		console.log(name);
-		console.log(stompClient);
-	    stompClient.send("/messageControl", {}, JSON.stringify({'name': name}));
+		var name = $("#name").val();
+		var content = $("#content").val();
+	    stompClient.send("/app/messageControl", {}, JSON.stringify({'name': name,'content':content}));
 	}
-	 
-	//顯示接收回來的訊息方法
-	function showConversation(responseMessage) {
-	    $("#chatRoom").append("<tr><td>" + responseMessage + "</td></tr>");
+	
+	function showMessage(message) {
+	    $("#chatRoom").append("<tr><td>" + message + "</td></tr>");
 	}
 	
 	$(function () {
@@ -106,7 +109,8 @@
 	    $( "#disconnect" ).click(function() { disconnect(); });
 	    $( "#send" ).click(function() { sendName(); });
 	});
-	
+
+
 </script>
 
 <style>
